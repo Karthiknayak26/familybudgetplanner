@@ -12,7 +12,7 @@ import {
   Legend
 } from 'recharts';
 import { motion } from 'framer-motion';
-import './app.css';
+import './App.css';
 
 const COLORS = ['#8e44ad', '#27ae60', '#f39c12', '#e74c3c'];
 
