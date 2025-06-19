@@ -1,0 +1,400 @@
+/* ------------------------------------
+   Import custom font (e.g., Inter) 
+------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  /* existing variables... */
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-accent: #8e44ad;
+  --color-accent-dark: #6f3480;
+  --color-success: #27ae60;
+  --color-warning: #f39c12;
+  --color-error: #e74c3c;
+  --color-text: #333333;
+  --color-bg: #f0f4f8;
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 10px;
+  --transition-fast: 0.2s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  --radius: 0.75rem;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 8px 16px rgba(0,0,0,0.15);
+  --btn-ripple-color: rgba(255, 255, 255, 0.3);
+  --tooltip-bg: rgba(0, 0, 0, 0.75);
+  --tooltip-text: #fff;
+}
+
+/* Dark mode support */
+body.dark {
+  --color-text: #e0e0e0;
+  --color-bg: #121212;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+/* ------------------------------------
+   Base styles
+------------------------------------ */
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background var(--transition-slow), color var(--transition-slow);
+}
+
+/* ------------------------------------
+   Theme toggle button (place in overlay)
+------------------------------------ */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  z-index: 20;
+}
+.theme-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-hover);
+}
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* ------------------------------------
+   Floating backgrounds / animated gradients
+------------------------------------ */
+@keyframes bgGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body.animated-bg {
+  background: linear-gradient(-45deg, #f0f4f8, #e0e8f5, #d0dce3, #e0e8f5);
+  background-size: 400% 400%;
+  animation: bgGradient 20s ease infinite;
+}
+
+/* ------------------------------------
+   Glass Card with floating & tilt
+------------------------------------ */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  animation: floatY 6s ease-in-out infinite;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+.glass-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: perspective(600px) rotateX(3deg) rotateY(3deg) translateZ(3px);
+}
+.glass-card:active {
+  transform: perspective(600px) rotateX(1deg) rotateY(1deg) translateZ(1px) scale(0.98);
+}
+
+/* ------------------------------------
+   Buttons with gradient accent and glow
+------------------------------------ */
+.primary-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  user-select: none;
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.primary-btn:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-accent-dark));
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+}
+.primary-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+/* Ripple */
+.primary-btn::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: var(--btn-ripple-color);
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+.primary-btn:focus:not(:active)::after,
+.primary-btn:active::after {
+  animation: ripple 0.6s ease-out;
+}
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.5; }
+  to   { transform: scale(4); opacity: 0; }
+}
+.primary-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------
+   Section Title with animated underline & reveal
+------------------------------------ */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.25rem;
+  color: var(--color-text);
+  opacity: 0;
+  animation: fadeInUp 0.6s forwards;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width var(--transition-fast);
+}
+.section-title:hover::after {
+  width: 50px;
+}
+
+/* ------------------------------------
+   List animations & tooltips
+------------------------------------ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.summary-list li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.4s forwards;
+}
+/* stagger via JS adding inline style animation-delay */
+.expense-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  opacity: 0;
+  animation: fadeInUp 0.4s forwards;
+}
+/* Hover highlight */
+.expense-list-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateX(4px);
+}
+.expense-list-item:active {
+  transform: translateX(2px);
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+.tooltip:hover .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.tooltip-text {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  font-size: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  pointer-events: none;
+  z-index: 10;
+}
+.tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--tooltip-bg) transparent transparent transparent;
+}
+
+/* ------------------------------------
+   Input focus & floating label hint
+------------------------------------ */
+.input-field {
+  position: relative;
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+  background-color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.input-field:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+}
+.input-field::placeholder {
+  color: #999;
+  opacity: 1;
+  transition: opacity var(--transition-fast);
+}
+.input-field:focus::placeholder {
+  opacity: 0.5;
+}
+
+/* Example floating-label wrapper (optional in JSX):
+<div class="floating-label">
+  <input class="input-field" placeholder=" " ... />
+  <label>Expense Title</label>
+</div>
+*/
+.floating-label {
+  position: relative;
+  margin-top: 1.5rem;
+}
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 0.75rem;
+  color: var(--color-accent);
+}
+.floating-label label {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+  background: var(--color-bg);
+  padding: 0 0.25rem;
+  color: #666;
+}
+
+/* ------------------------------------
+   Chart hover effects (via Recharts props), ensure tooltip styled earlier
+------------------------------------ */
+
+/* ------------------------------------
+   Responsive tweaks
+------------------------------------ */
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 1rem;
+  }
+  .primary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ------------------------------------
+   Link animations
+------------------------------------ */
+a {
+  position: relative;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  transition: width var(--transition-fast);
+}
+a:hover {
+  color: var(--color-accent);
+}
+a:hover::after {
+  width: 100%;
+}
+
+/* ------------------------------------
+   Section reveal on scroll (if using IntersectionObserver in JS)
+------------------------------------ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ------------------------------------
+   Summary
+------------------------------------ */
+/* - Custom font (Inter) for modern feel
+   - Theme toggle support: add/remove 'dark' class on <body>
+   - Animated background gradient if body.animated-bg
+   - Enhanced glass-card with float & tilt
+   - Gradient buttons with glow & ripple
+   - Section titles reveal + underline on hover
+   - List items fade in with JS-staggered delays
+   - Tooltips for hints (use .tooltip wrapper in JSX)
+   - Floating labels optional for inputs
+   - Link underline animations
+   - Reveal classes for elements on scroll
+*/
